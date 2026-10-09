@@ -1,0 +1,146 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/*
+  Prophecy design tokens
+  Paper   #F2F4F6  cool slate paper (page)
+  Surface #FFFFFF  panels and inputs
+  Ink     #16212C  text and primary chrome
+  Slate   #5A6A79  secondary text
+  Rule    #D5DCE3  dividers and borders
+  Wood    #2E5E4E  OS-map woodland green: primary action, positive figures
+  Brick   #A3442A  negative figures and destructive actions
+  Ochre   #A8741A  estimates (tax, projections) - always paired with a label
+*/
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-text);
+  --font-heading: var(--font-display);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-slate: var(--slate);
+  --color-rule: var(--rule);
+  --color-wood: var(--wood);
+  --color-wood-soft: var(--wood-soft);
+  --color-brick: var(--brick);
+  --color-brick-soft: var(--brick-soft);
+  --color-ochre: var(--ochre);
+  --color-ochre-soft: var(--ochre-soft);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+}
+
+:root {
+  --paper: #f2f4f6;
+  --ink: #16212c;
+  --slate: #5a6a79;
+  --rule: #d5dce3;
+  --wood: #2e5e4e;
+  --wood-soft: #e3eee9;
+  --brick: #a3442a;
+  --brick-soft: #f6e6e0;
+  --ochre: #8a5f12;
+  --ochre-soft: #f6eedc;
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: #ffffff;
+  --card-foreground: var(--ink);
+  --popover: #ffffff;
+  --popover-foreground: var(--ink);
+  --primary: var(--wood);
+  --primary-foreground: #ffffff;
+  --secondary: #e6eaee;
+  --secondary-foreground: var(--ink);
+  --muted: #e9edf1;
+  --muted-foreground: var(--slate);
+  --accent: #e6eaee;
+  --accent-foreground: var(--ink);
+  --destructive: var(--brick);
+  --border: var(--rule);
+  --input: #c3ccd5;
+  --ring: #2e5e4e;
+  --chart-1: #2e5e4e;
+  --chart-2: #3f6f9a;
+  --chart-3: #a8741a;
+  --chart-4: #a3442a;
+  --chart-5: #7b8794;
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    font-feature-settings: "ss01";
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+  :focus-visible {
+    outline: 2px solid var(--wood);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Figures: tabular so columns of money line up. */
+  .num {
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+  /* Ledger row: label on the left, figure on the right, dotted leader between. */
+  .leader {
+    flex: 1;
+    min-width: 1rem;
+    border-bottom: 1px dotted var(--input);
+    transform: translateY(-0.3em);
+  }
+  /* "Show the working": the margin-note treatment for formulas. */
+  .working {
+    border-left: 2px solid var(--wood);
+    background: linear-gradient(to right, var(--wood-soft), transparent 70%);
+  }
+}
