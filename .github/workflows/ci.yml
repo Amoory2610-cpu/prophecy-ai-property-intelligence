@@ -1,0 +1,83 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: prophecy
+          POSTGRES_PASSWORD: prophecy
+          POSTGRES_DB: prophecy_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U prophecy" --health-interval 5s --health-timeout 3s --health-retries 20
+    env:
+      TEST_DATABASE_URL: postgresql+psycopg://prophecy:prophecy@localhost:5432/prophecy_test
+      DATABASE_URL: postgresql+psycopg://prophecy:prophecy@localhost:5432/prophecy_test
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: backend/requirements-dev.txt
+      - run: pip install -r requirements-dev.txt
+      - name: Lint
+        run: ruff check app tests && ruff format --check app tests
+      - name: Migrations apply cleanly and match the models
+        run: alembic upgrade head && alembic check
+      - name: Tests (PostgreSQL)
+        run: pytest --cov --cov-report=term-missing
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+
+  e2e:
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Start the stack
+        run: |
+          cp .env.example .env
+          sed -i "s/^SECRET_KEY=$/SECRET_KEY=ci-$(openssl rand -hex 24)/" .env
+          docker compose up -d --build --wait
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Playwright
+        working-directory: frontend
+        run: npm ci && npx playwright install --with-deps chromium
+      - name: End-to-end journey
+        working-directory: frontend
+        env:
+          BASE_URL: http://localhost:3000
+        run: npx playwright test
+      - name: Logs on failure
+        if: failure()
+        run: docker compose logs --tail 200
