@@ -374,6 +374,8 @@ def analysis_pdf(
     story.append(Paragraph("Assumptions", st["h2"]))
     for a in results["assumptions"]:
         story.append(Paragraph(f"• {a}", st["body"]))
+    for note in results.get("tax_notes", []):
+        story.append(Paragraph(f"• {note}", st["body"]))
     story.append(Paragraph("Limitations", st["h2"]))
     for line in LIMITATIONS:
         story.append(Paragraph(f"• {line}", st["body"]))
@@ -410,6 +412,8 @@ def analysis_csv(title: str, results: dict[str, Any], property_info: dict[str, A
     w.writerow(["section", "assumption"])
     for a in results["assumptions"]:
         w.writerow(["assumption", a])
+    for a in results.get("tax_notes", []):
+        w.writerow(["tax_note", a])
     for a in results["warnings"]:
         w.writerow(["warning", a])
     return out.getvalue().encode("utf-8-sig")

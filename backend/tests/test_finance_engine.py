@@ -250,3 +250,10 @@ class TestInsights:
     def test_adjustments_are_clamped(self):
         adjusted = apply_adjustments(deal(interest_rate_pct=1), ScenarioAdjustments(interest_rate_change_pp=-5))
         assert adjusted.interest_rate_pct == 0
+
+
+def test_tax_caveats_are_separate_from_deal_warnings():
+    a = analyse_deal(deal())
+    assert any("not personalised tax advice" in n for n in a.tax_notes)
+    assert not any("not personalised tax advice" in w for w in a.warnings)
+    assert analyse_deal(deal(ownership="none")).tax_notes

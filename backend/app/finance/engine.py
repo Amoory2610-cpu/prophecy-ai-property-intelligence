@@ -105,6 +105,8 @@ class DealAnalysis(BaseModel):
     returns: ReturnsSummary
     assumptions: list[str]
     warnings: list[str]
+    # Standing caveats of the simplified tax model, kept apart from deal-specific warnings.
+    tax_notes: list[str] = []
     tax_rules_reviewed_on: str = TAX_RULES_REVIEWED_ON
 
     def metric(self, key: str) -> Metric:
@@ -299,7 +301,7 @@ def analyse_deal(inp: DealInputs) -> DealAnalysis:
                 equity=round(value - balance, 2),
             )
         )
-    warnings.extend(first_tax_warnings)
+    tax_notes: list[str] = list(first_tax_warnings)
 
     # --- sale ---------------------------------------------------------------
     last = projection[-1]
@@ -309,7 +311,7 @@ def analyse_deal(inp: DealInputs) -> DealAnalysis:
     gain = sale_price - selling_costs - base_cost
     if inp.include_cgt:
         cgt, cgt_formula, cgt_warnings = capital_gains_tax(ownership=inp.ownership, gain=gain, tax_band=inp.tax_band)
-        warnings.extend(cgt_warnings)
+        tax_notes.extend(cgt_warnings)
     else:
         cgt, cgt_formula = 0.0, "Capital gains tax excluded by user."
     net_sale = sale_price - selling_costs - last.loan_balance - cgt
@@ -655,4 +657,5 @@ def analyse_deal(inp: DealInputs) -> DealAnalysis:
         returns=returns,
         assumptions=assumptions,
         warnings=warnings,
+        tax_notes=tax_notes,
     )

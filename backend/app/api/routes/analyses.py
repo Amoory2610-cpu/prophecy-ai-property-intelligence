@@ -3,11 +3,13 @@ from __future__ import annotations
 import uuid
 from typing import Any
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, HTTPException, Query, Request
 from pydantic import BaseModel, Field
 from sqlalchemy import select
 
 from app.api.deps import DB, CurrentUser, SettingsDep
+from app.core.security import RateLimiter
+from app.finance.engine import analyse_deal
 from app.finance.inputs import DealInputs
 from app.finance.insights import (
     DEFAULT_OPTIMISTIC,
@@ -23,6 +25,36 @@ from app.services import deals, market
 from app.services.ai.service import build_context, explain
 
 router = APIRouter(tags=["analysis"])
+preview_limiter = RateLimiter(60)
+
+
+class PreviewIn(BaseModel):
+    purchase_price: float = Field(gt=0, le=20_000_000)
+    monthly_rent: float = Field(ge=0, le=200_000)
+    deposit_pct: float = Field(default=25, ge=0, le=100)
+    interest_rate_pct: float = Field(default=5.0, ge=0, le=25)
+
+
+@router.post("/public/preview")
+def public_preview(body: PreviewIn, request: Request):
+    """Unauthenticated, rate-limited quick estimate for the landing page."""
+    client = request.client.host if request.client else "unknown"
+    if not preview_limiter.allow(client):
+        raise HTTPException(status_code=429, detail="Too many requests. Try again in a minute.")
+    a = analyse_deal(DealInputs(**body.model_dump()))
+    keys = (
+        "gross_yield",
+        "net_yield",
+        "transaction_tax",
+        "monthly_mortgage_payment",
+        "monthly_cash_flow",
+        "cash_on_cash",
+    )
+    return {
+        "metrics": [a.metric(k).model_dump(mode="json") for k in keys],
+        "assumptions": "Defaults: additional-property SDLT (England), interest-only mortgage, 4% voids, "
+        "10% management, 5% maintenance, £750 a year fixed costs.",
+    }
 
 
 @router.post("/calculate")

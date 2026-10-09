@@ -115,7 +115,7 @@ def save_analysis(db: Session, user: User, prop: Property | None, inputs: DealIn
 
 DEMO_PROPERTIES: list[dict[str, Any]] = [
     dict(
-        title="DEMO · Two-bed terrace, Fallowfield",
+        title="Two-bed terrace, Fallowfield",
         town="Manchester",
         postcode="M14 6SZ",
         property_type="terraced",
@@ -126,7 +126,7 @@ DEMO_PROPERTIES: list[dict[str, Any]] = [
         estimated_monthly_rent=1_250,
     ),
     dict(
-        title="DEMO · Three-bed terrace, Headingley",
+        title="Three-bed terrace, Headingley",
         town="Leeds",
         postcode="LS6 4AN",
         property_type="terraced",
@@ -137,7 +137,7 @@ DEMO_PROPERTIES: list[dict[str, Any]] = [
         estimated_monthly_rent=1_450,
     ),
     dict(
-        title="DEMO · Two-bed terrace, Lenton",
+        title="Two-bed terrace, Lenton",
         town="Nottingham",
         postcode="NG7 2BU",
         property_type="terraced",
@@ -148,7 +148,7 @@ DEMO_PROPERTIES: list[dict[str, Any]] = [
         estimated_monthly_rent=950,
     ),
     dict(
-        title="DEMO · Three-bed terrace, Wavertree",
+        title="Three-bed terrace, Wavertree",
         town="Liverpool",
         postcode="L15 4HX",
         property_type="terraced",
@@ -159,7 +159,7 @@ DEMO_PROPERTIES: list[dict[str, Any]] = [
         estimated_monthly_rent=1_050,
     ),
     dict(
-        title="DEMO · One-bed city-centre flat",
+        title="One-bed city-centre flat",
         town="Manchester",
         postcode="M1 4AB",
         property_type="flat",
@@ -171,7 +171,7 @@ DEMO_PROPERTIES: list[dict[str, Any]] = [
         assumption_overrides={"ground_rent_service_annual": 1_800},
     ),
     dict(
-        title="DEMO · Two-bed terrace, Cathays",
+        title="Two-bed terrace, Cathays",
         town="Cardiff",
         postcode="CF24 2DN",
         region="wales",
@@ -183,7 +183,7 @@ DEMO_PROPERTIES: list[dict[str, Any]] = [
         estimated_monthly_rent=1_300,
     ),
     dict(
-        title="DEMO · Two-bed flat, Byker",
+        title="Two-bed flat, Byker",
         town="Newcastle upon Tyne",
         postcode="NE6 1RJ",
         property_type="flat",

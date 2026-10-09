@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 from functools import lru_cache
-from typing import Literal
+from typing import Annotated, Literal
 
 from pydantic import Field, field_validator, model_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 _DEV_SECRET = "dev-insecure-secret-change-me-0123456789abcdef"
 
@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = Field(default=60 * 8, ge=5, le=60 * 24 * 30)
     cookie_name: str = "prophecy_session"
     cookie_secure: bool = False
-    cors_origins: list[str] = ["http://localhost:3000"]
+    cors_origins: Annotated[list[str], NoDecode] = ["http://localhost:3000"]
 
     max_upload_mb: int = Field(default=50, ge=1, le=500)
     login_rate_limit_per_minute: int = Field(default=10, ge=1)

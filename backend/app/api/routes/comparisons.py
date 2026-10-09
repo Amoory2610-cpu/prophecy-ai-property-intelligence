@@ -90,6 +90,8 @@ def compute(db, user, props: list[Property], shared: dict[str, Any]) -> dict[str
         vals = [(r[key], r) for r in rows if r[key] is not None]
         if len(vals) < 2:
             continue
+        if max(v[0] for v in vals) - min(v[0] for v in vals) < 1e-9:
+            continue  # all equal: no leader or laggard on this measure
         best = max(vals, key=lambda v: v[0]) if higher else min(vals, key=lambda v: v[0])
         worst = min(vals, key=lambda v: v[0]) if higher else max(vals, key=lambda v: v[0])
         leaders[key] = {

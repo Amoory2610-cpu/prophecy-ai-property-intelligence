@@ -61,10 +61,18 @@ class TestProperties:
         first = client.post("/api/properties/demo").json()
         second = client.post("/api/properties/demo").json()
         assert len(first) == len(second) == 7
-        assert all(p["is_demo"] and p["data_source"] == "demo" and p["title"].startswith("DEMO") for p in first)
+        assert all(p["is_demo"] and p["data_source"] == "demo" and p["rent_source"] == "demo" for p in first)
         assert client.get("/api/properties?demo=true").json()["total"] == 7
         assert client.delete("/api/properties/demo").status_code == 204
         assert client.get("/api/properties").json()["total"] == 0
+
+
+def test_public_preview(client):
+    r = client.post("/api/public/preview", json={"purchase_price": 200000, "monthly_rent": 1100})
+    assert r.status_code == 200
+    keys = [m["key"] for m in r.json()["metrics"]]
+    assert keys[0] == "gross_yield" and r.json()["metrics"][0]["value"] == 6.6
+    assert client.post("/api/public/preview", json={"purchase_price": 0, "monthly_rent": 1}).status_code == 422
 
 
 class TestAnalysis:
@@ -205,6 +213,7 @@ class TestComparisonsAndWatchlists:
         assert res["leaders"]["gross_yield"]["best_property_id"] == ps[1]["id"]
         assert res["leaders"]["initial_cash_required"]["best_property_id"] == ps[1]["id"]
         assert isinstance(res["tradeoffs"], list) and "No single property is ranked best" in res["note"]
+        assert "ltv" not in res["leaders"]  # identical 75% LTV everywhere: no leader
 
     def test_comparison_validation(self, client, user):
         ps = self._props(client, 2)
