@@ -118,7 +118,7 @@ Key decisions:
   schema (summary, strengths, weaknesses, risks with severity, yield and cash-flow commentary,
   sensitivity, improvements, caveats).
 * Providers: `AnthropicProvider` (official SDK, `messages.parse` structured output, default
-  model `claude-opus-5`), `OpenAICompatibleProvider` (any Chat Completions endpoint with JSON
+  model `claude-opus-5-5`), `OpenAICompatibleProvider` (any Chat Completions endpoint with JSON
   schema output) and `RuleBasedProvider` (deterministic thresholds, always available).
 * **Grounding:** the model only receives the calculated metrics, inputs, break-even and
   sensitivity results, and (if present) Land Registry comparable statistics with their source.

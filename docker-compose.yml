@@ -27,7 +27,7 @@ services:
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:${FRONTEND_PORT:-3000}}
       AI_PROVIDER: ${AI_PROVIDER:-none}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
-      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-opus-5}
+      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-opus-5-5}
       IMPORT_SAMPLE_DATA: ${IMPORT_SAMPLE_DATA:-true}
     ports:
       - "${BACKEND_PORT:-8000}:8000"

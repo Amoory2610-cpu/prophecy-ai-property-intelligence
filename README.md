@@ -1,5 +1,7 @@
 # Prophecy AI: property investment intelligence
 
+[![CI](https://github.com/Amoory2610-cpu/prophecy-ai-property-intelligence/actions/workflows/ci.yml/badge.svg)](https://github.com/Amoory2610-cpu/prophecy-ai-property-intelligence/actions/workflows/ci.yml)
+
 A full-stack platform for analysing UK buy-to-let deals. Enter a price and a rent and
 Prophecy works out stamp duty, the mortgage, voids, running costs, tax scenarios, cash flow and
 long-run returns, and **shows the formula and inputs behind every figure**. It stress-tests
@@ -126,7 +128,7 @@ The API documentation is served at http://localhost:8000/api/docs.
 | `MAX_UPLOAD_MB` | `50` | Land Registry upload limit (property CSVs are capped at 10 MB) |
 | `LOGIN_RATE_LIMIT_PER_MINUTE` | `10` | Failed and successful login attempts per IP and email |
 | `AI_PROVIDER` | `none` | `none`, `anthropic` or `openai` |
-| `ANTHROPIC_API_KEY` / `ANTHROPIC_MODEL` | none / `claude-opus-5` | Claude explanations |
+| `ANTHROPIC_API_KEY` / `ANTHROPIC_MODEL` | none / `claude-opus-5-5` | Claude explanations |
 | `OPENAI_API_KEY` / `OPENAI_BASE_URL` / `OPENAI_MODEL` | none | Any OpenAI-compatible endpoint |
 | `IMPORT_SAMPLE_DATA` | `true` (Docker) | Import the bundled sample on container start |
 | `API_ORIGIN` | `http://localhost:8000` | Where Next.js proxies `/api` (needed at build time) |
@@ -148,7 +150,8 @@ The Docker entrypoint runs `alembic upgrade head` before starting the API.
 ## Tests
 
 ```bash
-# Backend: 169 tests (finance engine, tax rules, API, security, imports, reports, config)
+# Backend: 169 test cases from 128 test functions (14 are parametrised over several inputs),
+# covering the finance engine, tax rules, API, security, imports, reports and config
 cd backend
 pytest                                   # SQLite by default
 TEST_DATABASE_URL=postgresql+psycopg://user:pass@localhost:5433/prophecy_test pytest
